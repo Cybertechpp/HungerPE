@@ -1,0 +1,41 @@
+name: HungerPE
+main: CyberTech\Main
+version: 0.0.0.1
+api: 1.0.0
+
+commands:
+    hg:
+       description: "Base HungerPE Command"
+       usage: "/hg"
+       permission: HungerPE.Base
+  
+permissions:
+ HungerPE:
+  default: op
+  description: "Allows using all the HungerPE Commnads"
+  childern:
+    HungerPE.Player:
+        description: "Is Player In HungerPE"
+        childern:
+            HungerPE.Player.InArena:
+                description: "Player is in an arena"
+                children:
+                    HungerPE.Player.InArena.Alive:
+                         description: "Alive In Arena"
+                    HungerPE.Player.InArena.Dead:
+                         description: "Ran Out Of Lives In Arena"
+            HungerPE.Player.Queuing:
+                description: "Waiting For Arena To Start"
+    HungerPE.OP:
+        description: "Are OP of Arena"
+        default: op
+        childern:
+            HungerPE.OP.Start:
+                descritpion: "Starts Arena"
+                default: op
+            HungerPE.OP.Stop:
+                descritpion: "Stop Arena"
+                default: op
+                
+
+                        
