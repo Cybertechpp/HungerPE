@@ -51,7 +51,7 @@ class Main extends PluginBase implements Listener{
         $this->getLogger()->info( TextFormat::GREEN . "HungerPE - Enabled!" );
         $this->db = new \SQLite3($this->getDataFolder() . "HungerPE.db");// This logs payer wins and VIP players
         //Start 10 Min Timer to Start Game If No Game is In Progress and The Minimum People is Meet.
-        if(!$this->getConfig()->get("ENABLED")) { // If user chooses to enable plugin or not
+        if(!$this->getConfig()->get("ENABLED")) { // If user chooses to enable plugin or not!
             $this->getPluginLoader()->disablePlugin($this);
             return true;
         }
