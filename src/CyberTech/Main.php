@@ -1,6 +1,6 @@
 <?php
 /*
- * Encryption - Decryption (v0.0.0.1) by CyberTech++
+ * HungerPE (v0.0.0.1) by CyberTech++
  * Developer: CyberTech++ (Yungtechboy1)
  * Website: http://www.cybertechpp.com
  * Date: 2/16/15 9:04 PM (CST)
@@ -49,7 +49,8 @@ class Main extends PluginBase implements Listener{
         $this->reloadConfig();
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->getLogger()->info( TextFormat::GREEN . "HungerPE - Enabled!" );
-        $this->db = new \SQLite3($this->getDataFolder() . "HungerPE.db");
+        $this->db = new \SQLite3($this->getDataFolder() . "HungerPE.db");// This logs payer wins and VIP players
+        //Start 10 Min Timer to Start Game If No Game is In Progress and The Minimum People is Meet.
         return true;
     }
     /* HungerPE Commands */
