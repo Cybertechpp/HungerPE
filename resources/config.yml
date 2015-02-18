@@ -1,10 +1,24 @@
 ---
-ENABLED: true # If not true, HungerPE will disable
-HG-WORLDS: # These are the worlds that players play on
-    - world
-    - world2
-LOBBY-WORLD: lobby # This is the world that players wait in to play
-SPAWN-WORLD: spawn # This is the world that players go on first join (Main Spawn)
-JOIN-MESSAGE: "Welcome To HungerPE! Use /hg join To Play!" # Message sent to players when they join
+Enabled: true 
+# If not true, HungerPE will disable
+HG-Worlds: 
+# These are the worlds that players play on
+    - HGWorld
+    - HGWorld2
+    - HGworld3
+Lobby-World: lobby 
+# This is the world that players wait in to play
+Spawn-World: spawn 
+# This is the world that players go on first join (Main Spawn)
+Join-Message: "Welcome To HungerPE! Use /hg join To Play!" 
+# Message sent to players when they join
+HG-World-Prefix: HG
+# The prefix on HG broadcasts
+Minimum-Players: 10
+# Minimum players to start a game
+Max-Players: 10
+# Max players to start a game
+Queing-Time: 2
+# Time to check if lobby has atleast the minimum amount players
 ...
 
