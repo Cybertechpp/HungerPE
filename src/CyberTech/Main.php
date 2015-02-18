@@ -172,8 +172,8 @@ class Main extends PluginBase implements Listener{
                 $player->sendMessage($msg);   
                 return true;
             }else{
-                foreach($this->getServer()->getLevels()->getName() as $w) {
-                    if($w == $lobby || $w == $hgworld) {
+                foreach($this->getServer()->getLevels() as $w) {
+                    if($w->getName() == $lobby || $w->getName() == $hgworld) {
                         return false;
                     }
                     $this->initAlert($w, $alert);
