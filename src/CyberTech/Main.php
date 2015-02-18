@@ -93,7 +93,7 @@ class Main extends PluginBase implements Listener{
         }
     }
     
-    public function PlayerPrepaeForStart($arena) {
+    public function PlayerPrepraeForStart($arena) {
         $base = $this->queing[$arena];
         foreach ($base as $p){
             $player = $this->getServer()->getPlayerExact($p);
