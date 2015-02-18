@@ -176,7 +176,7 @@ class Main extends PluginBase implements Listener{
                     if($w->getName() == $lobby || $w->getName() == $hgworld) {
                         return true;
                     }
-                    $this->initAlert($w, $alert);
+                    $this->initAlert($w->getName(), $alert);
                 }
                 if($msg == false) {
                     return true;
@@ -204,11 +204,11 @@ class Main extends PluginBase implements Listener{
                 $player->sendMessage($msg);   
                 return true;
             }else{
-                foreach($this->getServer()->getLevels()->getName() as $w) {
-                    if($w == $lobby || $w == $hgworld) {
+                foreach($this->getServer()->getLevels() as $w) {
+                    if($w->getName() == $lobby || $w->getName() == $hgworld) {
                         return false;
                     }
-                    $this->initAlert($w, $alert);
+                    $this->initAlert($w->getName(), $alert);
                 }
                 if($msg == false) {
                     return true;
@@ -233,19 +233,4 @@ class Main extends PluginBase implements Listener{
         private $HGS;
         private $HGW;
         private $HGID;
-        public function loadYml(){
-        @mkdir($this->getServer()->getDataPath() . "/plugins/HG/");
-        $this->HGS = (new Config($this->getServer()->getDataPath() . "/plugins/HG/" . "GeneralSettings.yml", Config::YAML ,array(
-            'Queing-Time'=>'2',
-            'Minimum-Players'=>'10',
-            'HG-World-Prefix'=>'HG_'
-        )))->getAll();
-        $this->HGID = (new Config($this->getServer()->getDataPath() . "/plugins/HG/" . "HGIDs.yml", Config::YAML ,array(
-            '1'=>'HG1'
-            )))->getAll();
-        $this->HGW = (new Config($this->getServer()->getDataPath() . "/plugins/HG/" . "HGWorlds.yml", Config::YAML ,array(
-            'HG1'=>'HGWorld'
-            )))->getAll();
-        return true;
-    }
 }
