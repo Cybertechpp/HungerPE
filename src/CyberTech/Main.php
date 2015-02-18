@@ -57,9 +57,17 @@ class Main extends PluginBase implements Listener{
         }
         return true;
     }
+    
+    public function OnDisable(){
+        foreach ($this->worldsopen as $w){
+            $path = $this->getServer()->getDataPath();
+            $topath = $path."worlds/".$w."/";
+            echo $topath;
+            $this->delete_directory($topath);
+        }
+    }
     /* HungerPE Commands */
-    public function onCommand(CommandSender $sender, Command $command, $label, array $args){    
-        $battels = $this->battels;
+    public function onCommand(CommandSender $sender, Command $command, $label, array $args){
         switch($command->getName()){
             case "hg":
                 if ($args[0] == "join"){
@@ -103,16 +111,52 @@ class Main extends PluginBase implements Listener{
         }
     }
     
+    private $worldsopen = array();
     public function CopyHGWorld($arena){
         $path = $this->getServer()->getDataPath();
         $world = $this->HGW[($this->HGID[$arena])];
         $prefix = $this->HGS['HG-World-Prefix'];
-        $topath = $path."/worlds/".$world;
-        $frompath = $path."/worlds/".$prefix.$world;
-        if (copy($frompath, $topath)){
-            //Sucess
-        }
+        $frompath = $path."worlds/".$world."/";
+        $topath = $path."worlds/".$prefix.$world."/";
+        array_push($this->worldsopen, $prefix.$world);
+        $this->recurse_copy($frompath, $topath);
     }
+    
+    function recurse_copy($src,$dst) { 
+    $dir = opendir($src); 
+    @mkdir($dst); 
+    while(false !== ( $file = readdir($dir)) ) { 
+        if (( $file != '.' ) && ( $file != '..' )) { 
+            if ( is_dir($src . '/' . $file) ) { 
+                $this->recurse_copy($src . '/' . $file,$dst . '/' . $file); 
+            } 
+            else { 
+                copy($src . '/' . $file,$dst . '/' . $file); 
+            } 
+        } 
+    } 
+    closedir($dir); 
+}
+
+
+function delete_directory($dirname) {
+         if (is_dir($dirname))
+           $dir_handle = opendir($dirname);
+	 if (!$dir_handle)
+	      return false;
+	 while($file = readdir($dir_handle)) {
+	       if ($file != "." && $file != "..") {
+	            if (!is_dir($dirname."/".$file))
+	                 unlink($dirname."/".$file);
+	            else
+	                 $this->delete_directory($dirname.'/'.$file);
+	       }
+	 }
+	 closedir($dir_handle);
+	 rmdir($dirname);
+	 return true;
+}
+    
 
 
     public function chkConfig() {
