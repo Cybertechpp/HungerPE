@@ -43,7 +43,6 @@ class Main extends PluginBase implements Listener{
     public $gameState = 0;
  
     public function onEnable() {
-        $this->loadYml();
         $this->chkConfig();
         @mkdir($this->getDataFolder());
         $this->saveDefaultConfig();
