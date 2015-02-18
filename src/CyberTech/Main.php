@@ -1,4 +1,3 @@
-
 <?php
 /*
  * HungerPE (v0.0.0.1) by CyberTech++
@@ -175,7 +174,7 @@ class Main extends PluginBase implements Listener{
             }else{
                 foreach($this->getServer()->getLevels() as $w) {
                     if($w->getName() == $lobby || $w->getName() == $hgworld) {
-                        return false;
+                        return true;
                     }
                     $this->initAlert($w, $alert);
                 }
