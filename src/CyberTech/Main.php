@@ -43,6 +43,7 @@ class Main extends PluginBase implements Listener{
     public $gameState = 0;
  
     public function onEnable() {
+        $this->loadYml();
         $this->chkConfig();
         @mkdir($this->getDataFolder());
         $this->saveDefaultConfig();
@@ -63,13 +64,58 @@ class Main extends PluginBase implements Listener{
         switch($command->getName()){
             case "hg":
                 if ($args[0] == "join"){
-                    $this->Encrypt($args[0], $args[1]);
+                   //$this->JoinHG($args[0], $args[1]);
+                    $this->CopyHGWorld("1");
+                }
+                if ($args[0] == "list"){
+                    //List HG
                 }
                 return true;
                 default:
                     return false;
         }
     }
+    
+    private $queing = array();
+    public function JoinHG(Player $player, $game){
+        $playern = $player->getName();
+        array_push($this->queing[$game], $playern);
+        //Check For Start
+    }
+    
+    private $gamestats;
+    public function CheckHGStart($arena) {
+        //10 Players Are Queing For the arean and arena is not in progress
+        if (($this->HGS['Minimum-Players'] == count($this->queing[$arena])) && ($this->gamestats[$arena] == 'stopped')){
+            //Clear Inv and TP to HG
+            //
+            //Start HG
+        }
+    }
+    
+    public function PlayerPrepaeForStart($arena) {
+        $base = $this->queing[$arena];
+        foreach ($base as $p){
+            $player = $this->getServer()->getPlayerExact($p);
+            if ($player instanceof Player){
+                $playern = $player->getName();
+                
+            }
+        }
+    }
+    
+    public function CopyHGWorld($arena){
+        $path = $this->getServer()->getDataPath();
+        $world = $this->HGW[($this->HGID[$arena])];
+        $prefix = $this->HGS['HG-World-Prefix'];
+        $topath = $path."/worlds/".$world;
+        $frompath = $path."/worlds/".$prefix.$world;
+        if (copy($frompath, $topath)){
+            //Sucess
+        }
+    }
+
+
     public function chkConfig() {
         $hgworld = $this->getConfig()->get("HG-WORLDS");
         $lobby = $this->getConfig()->get("LOBBY-WORLD");
@@ -184,13 +230,22 @@ class Main extends PluginBase implements Listener{
             return false;
     	}
     }
-    
-    /* HungerPE Player Join */
-    private $queing = array();
-    public function HungerPEJoin(Player $player){
-        $playern = $player->getName();
-        array_push($this->queing, $playern);
-        //Check HungerPE for Start
-        return True;
+        private $HGS;
+        private $HGW;
+        private $HGID;
+        public function loadYml(){
+        @mkdir($this->getServer()->getDataPath() . "/plugins/HG/");
+        $this->HGS = (new Config($this->getServer()->getDataPath() . "/plugins/HG/" . "GeneralSettings.yml", Config::YAML ,array(
+            'Queing-Time'=>'2',
+            'Minimum-Players'=>'10',
+            'HG-World-Prefix'=>'HG_'
+        )))->getAll();
+        $this->HGID = (new Config($this->getServer()->getDataPath() . "/plugins/HG/" . "HGIDs.yml", Config::YAML ,array(
+            '1'=>'HG1'
+            )))->getAll();
+        $this->HGW = (new Config($this->getServer()->getDataPath() . "/plugins/HG/" . "HGWorlds.yml", Config::YAML ,array(
+            'HG1'=>'HGWorld'
+            )))->getAll();
+        return true;
     }
 }
