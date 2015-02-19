@@ -37,7 +37,6 @@ use pocketmine\plugin\PluginPharLoader;
 use pocketmine\plugin\PluginLoader;
 use CyberTech\StartQueingTimer;
 use CyberTech\StartArena;
-use CyberTech\StartWorld;
 
 
 //TEST
@@ -90,11 +89,18 @@ class Main extends PluginBase implements Listener{
     
     public $queing = array();
     public function JoinHG(Player $player, $game){
+        /*if (count($this->queing[$game]) == 0){
+            //Start Timer
+        }*/
         $playern = $player->getName();
         if (!in_array($game, $this->queing)){
             $this->queing[$game] = array();
+            //array_push($this->queing, array($game));
         }
+        
         $this->queing[$game][] = "$playern";
+        print_r($this->queing);
+        //array_push($this->queing[$game], array("$playern"));
         $this->CheckHGStart($game);
         //Check For Start
     }
@@ -126,6 +132,31 @@ class Main extends PluginBase implements Listener{
     }
     
     public $worldsopen = array();
+    public function CopyHGWorld($arena){
+        $path = $this->getServer()->getDataPath();
+        $world = $this->getConfig()->get(($this->getConfig()->get($arena)));
+        $prefix = $this->getConfig()->get('HG-World-Prefix');
+        $frompath = $path."worlds/".$world."/";
+        $topath = $path."worlds/".$prefix.$world."/";
+        array_push($this->worldsopen, $prefix.$world);
+        $this->recurse_copy($frompath, $topath);
+    }
+    
+    function recurse_copy($src,$dst) { 
+    $dir = opendir($src); 
+    @mkdir($dst); 
+    while(false !== ( $file = readdir($dir)) ) { 
+        if (( $file != '.' ) && ( $file != '..' )) { 
+            if ( is_dir($src . '/' . $file) ) { 
+                $this->recurse_copy($src . '/' . $file,$dst . '/' . $file); 
+            } 
+            else { 
+                copy($src . '/' . $file,$dst . '/' . $file); 
+            } 
+        } 
+    } 
+    closedir($dir); 
+}
 
 public function StartGameTimer() {
     $task = new StartGameTimer ($this);
@@ -133,7 +164,27 @@ public function StartGameTimer() {
     $this->getServer()->getScheduler()->scheduleDelayedRepeatingTask($task, $time, $time);
 }
 
-public function chkConfig() {
+function delete_directory($dirname) {
+         if (is_dir($dirname))
+           $dir_handle = opendir($dirname);
+	 if (!$dir_handle)
+	      return false;
+	 while($file = readdir($dir_handle)) {
+	       if ($file != "." && $file != "..") {
+	            if (!is_dir($dirname."/".$file))
+	                 unlink($dirname."/".$file);
+	            else
+	                 $this->delete_directory($dirname.'/'.$file);
+	       }
+	 }
+	 closedir($dir_handle);
+	 rmdir($dirname);
+	 return true;
+}
+    
+
+
+    public function chkConfig() {
         $hgworld = $this->getConfig()->get("HG-WORLDS");
         $lobby = $this->getConfig()->get("LOBBY-WORLD");
         $spawn = $this->getConfig()->get("SPAWN-WORLD");
