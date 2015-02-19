@@ -5,10 +5,8 @@ namespace CyberTech;
 use pocketmine\scheduler\PluginTask;
 use pocketmine\Server;
 use pocketmine\Player;
-use pocketmine\plugin\PluginBase;
-use pocketmine\plugin\Plugin;
 
-class StartGameTimer extends Main {
+class StartArena extends PluginTask {
 	private $plugin;
 	
 	public function __construct(Main $plugin) {
@@ -20,6 +18,18 @@ class StartGameTimer extends Main {
             foreach ($this->plugin->gamestats as $g){
             $this->plugin->CheckHGStart($arena, $timer);
             }
+        }
+        
+        public function ThaPrepareArenaForStart(Main $other, $arena) {
+            foreach($other->queing[$arena] as $a){
+                echo "\r\n Players Name $a \r\n";
+                $player = $other->getServer()->getPlayerExact($a);
+                $playern = $player->getName();
+                echo $playern;
+            }
+                
+            //
+            
         }
 }
 

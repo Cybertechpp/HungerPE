@@ -132,56 +132,13 @@ class Main extends PluginBase implements Listener{
     }
     
     public $worldsopen = array();
-    public function CopyHGWorld($arena){
-        $path = $this->getServer()->getDataPath();
-        $world = $this->getConfig()->get(($this->getConfig()->get($arena)));
-        $prefix = $this->getConfig()->get('HG-World-Prefix');
-        $frompath = $path."worlds/".$world."/";
-        $topath = $path."worlds/".$prefix.$world."/";
-        array_push($this->worldsopen, $prefix.$world);
-        $this->recurse_copy($frompath, $topath);
-    }
-    
-    function recurse_copy($src,$dst) { 
-    $dir = opendir($src); 
-    @mkdir($dst); 
-    while(false !== ( $file = readdir($dir)) ) { 
-        if (( $file != '.' ) && ( $file != '..' )) { 
-            if ( is_dir($src . '/' . $file) ) { 
-                $this->recurse_copy($src . '/' . $file,$dst . '/' . $file); 
-            } 
-            else { 
-                copy($src . '/' . $file,$dst . '/' . $file); 
-            } 
-        } 
-    } 
-    closedir($dir); 
-}
+
 
 public function StartGameTimer() {
     $task = new StartGameTimer ($this);
     $time = 2 * 1200;
     $this->getServer()->getScheduler()->scheduleDelayedRepeatingTask($task, $time, $time);
 }
-
-function delete_directory($dirname) {
-         if (is_dir($dirname))
-           $dir_handle = opendir($dirname);
-	 if (!$dir_handle)
-	      return false;
-	 while($file = readdir($dir_handle)) {
-	       if ($file != "." && $file != "..") {
-	            if (!is_dir($dirname."/".$file))
-	                 unlink($dirname."/".$file);
-	            else
-	                 $this->delete_directory($dirname.'/'.$file);
-	       }
-	 }
-	 closedir($dir_handle);
-	 rmdir($dirname);
-	 return true;
-}
-    
 
 
     public function chkConfig() {
