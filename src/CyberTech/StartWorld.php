@@ -20,16 +20,17 @@ class StartArena extends PluginTask {
             }
         }
         
-        public function ThaPrepareArenaForStart(Main $other, $arena) {
-            foreach($other->queing[$arena] as $a){
-                echo "\r\n Players Name $a \r\n";
-                $player = $other->getServer()->getPlayerExact($a);
-                $playern = $player->getName();
-                echo $playern;
-            }
-                
-            //
-            
+        public function StartWord(Main $main, $arena) {
+            $this->CopyHGWorld($main, $arena);
+            return true;
+        }
+        
+        public function StopWorld(Main $main, $arena) {
+            $path = $main->getServer()->getDataPath();
+            $world = $main->worldsopen[$arena];
+            $dirname = $path.$world;
+            $this->delete_directory($dirname);
+            return true;
         }
         
         function delete_directory($dirname) {
@@ -49,7 +50,31 @@ class StartArena extends PluginTask {
 	 rmdir($dirname);
 	 return true;
 }
+        public function CopyHGWorld(Main $main ,$arena){
+        $path = $main->getServer()->getDataPath();
+        $world = $main->getConfig()->get(($this->getConfig()->get($arena)));
+        $prefix = $main->getConfig()->get('HG-World-Prefix');
+        $frompath = $path."worlds/".$world."/";
+        $topath = $path."worlds/".$prefix.$world."/";
+        $main->worldsopen[$arena] = $prefix.$world;
+        $this->recurse_copy($frompath, $topath);
+    }
     
+    function recurse_copy($src,$dst) { 
+    $dir = opendir($src); 
+    @mkdir($dst); 
+    while(false !== ( $file = readdir($dir)) ) { 
+        if (( $file != '.' ) && ( $file != '..' )) { 
+            if ( is_dir($src . '/' . $file) ) { 
+                $this->recurse_copy($src . '/' . $file,$dst . '/' . $file); 
+            } 
+            else { 
+                copy($src . '/' . $file,$dst . '/' . $file); 
+            } 
+        } 
+    } 
+    closedir($dir); 
+}
 }
 
 
