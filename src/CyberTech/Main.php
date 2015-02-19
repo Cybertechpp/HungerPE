@@ -55,6 +55,7 @@ class Main extends PluginBase implements Listener{
             $this->getPluginLoader()->disablePlugin($this);
             return true;
         }
+        
         return true;
     }
     
@@ -66,13 +67,13 @@ class Main extends PluginBase implements Listener{
             $this->delete_directory($topath);
         }
     }
+    
     /* HungerPE Commands */
     public function onCommand(CommandSender $sender, Command $command, $label, array $args){
         switch($command->getName()){
             case "hg":
                 if ($args[0] == "join"){
-                   //$this->JoinHG($args[0], $args[1]);
-                    $this->CopyHGWorld("1");
+                   $this->JoinHG($args[0], $args[1]);
                 }
                 if ($args[0] == "list"){
                     //List HG
@@ -85,15 +86,19 @@ class Main extends PluginBase implements Listener{
     
     private $queing = array();
     public function JoinHG(Player $player, $game){
+        /*if (count($this->queing[$game]) == 0){
+            //Start Timer
+        }*/
         $playern = $player->getName();
         array_push($this->queing[$game], $playern);
+        $this->CheckHGStart($game);
         //Check For Start
     }
     
     private $gamestats;
     public function CheckHGStart($arena) {
         //10 Players Are Queing For the arean and arena is not in progress
-        if (($this->HGS['Minimum-Players'] == count($this->queing[$arena])) && ($this->gamestats[$arena] == 'stopped')){
+        if (($this->getConfig()->get('Minimum-Players') <= count($this->queing[$arena])) && ($this->gamestats[$arena] == 'stopped')){
             //Clear Inv and TP to HG
             //
             //Start HG
@@ -114,8 +119,8 @@ class Main extends PluginBase implements Listener{
     private $worldsopen = array();
     public function CopyHGWorld($arena){
         $path = $this->getServer()->getDataPath();
-        $world = $this->HGW[($this->HGID[$arena])];
-        $prefix = $this->HGS['HG-World-Prefix'];
+        $world = $this->getConfig()->get(($this->getConfig()->get($arena)));
+        $prefix = $this->getConfig()->get('HG-World-Prefix');
         $frompath = $path."worlds/".$world."/";
         $topath = $path."worlds/".$prefix.$world."/";
         array_push($this->worldsopen, $prefix.$world);
@@ -138,6 +143,11 @@ class Main extends PluginBase implements Listener{
     closedir($dir); 
 }
 
+public function StartGameTimer() {
+    $task = new StartGameTimer ($this);
+    $time = 2 * 1200;
+    $this->getServer()->getScheduler()->scheduleDelayedRepeatingTask($task, $time, $time);
+}
 
 function delete_directory($dirname) {
          if (is_dir($dirname))
