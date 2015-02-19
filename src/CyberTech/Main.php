@@ -36,6 +36,9 @@ use pocketmine\inventory\Inventory;
 use pocketmine\plugin\PluginPharLoader;
 use pocketmine\plugin\PluginLoader;
 use CyberTech\StartQueingTimer;
+use CyberTech\StartArena;
+use CyberTech\StartWorld;
+
 
 //TEST
 class Main extends PluginBase implements Listener{
@@ -74,7 +77,7 @@ class Main extends PluginBase implements Listener{
         switch($command->getName()){
             case "hg":
                 if ($args[0] == "join"){
-                   $this->JoinHG($args[0], $args[1]);
+                   $this->JoinHG($sender, $args[1]);
                 }
                 if ($args[0] == "list"){
                     //List HG
@@ -85,24 +88,29 @@ class Main extends PluginBase implements Listener{
         }
     }
     
-    private $queing = array();
+    public $queing = array();
     public function JoinHG(Player $player, $game){
-        /*if (count($this->queing[$game]) == 0){
-            //Start Timer
-        }*/
         $playern = $player->getName();
-        array_push($this->queing[$game], $playern);
+        if (!in_array($game, $this->queing)){
+            $this->queing[$game] = array();
+        }
+        $this->queing[$game][] = "$playern";
         $this->CheckHGStart($game);
         //Check For Start
     }
     
-    private $gamestats;
+    public $gamestats;
     public function CheckHGStart($arena) {
         //10 Players Are Queing For the arean and arena is not in progress
+        $other = new StartArena ( $this );
+        $other->ThaPrepareArenaForStart($this, $arena);
         if (($this->getConfig()->get('Minimum-Players') <= count($this->queing[$arena])) && ($this->gamestats[$arena] == 'stopped')){
             //Clear Inv and TP to HG
             //
             //Start HG
+            
+            //$this->getServer()->getPluginManager()->callEvent($other);
+            
         }
     }
     
@@ -117,32 +125,7 @@ class Main extends PluginBase implements Listener{
         }
     }
     
-    private $worldsopen = array();
-    public function CopyHGWorld($arena){
-        $path = $this->getServer()->getDataPath();
-        $world = $this->getConfig()->get(($this->getConfig()->get($arena)));
-        $prefix = $this->getConfig()->get('HG-World-Prefix');
-        $frompath = $path."worlds/".$world."/";
-        $topath = $path."worlds/".$prefix.$world."/";
-        array_push($this->worldsopen, $prefix.$world);
-        $this->recurse_copy($frompath, $topath);
-    }
-    
-    function recurse_copy($src,$dst) { 
-    $dir = opendir($src); 
-    @mkdir($dst); 
-    while(false !== ( $file = readdir($dir)) ) { 
-        if (( $file != '.' ) && ( $file != '..' )) { 
-            if ( is_dir($src . '/' . $file) ) { 
-                $this->recurse_copy($src . '/' . $file,$dst . '/' . $file); 
-            } 
-            else { 
-                copy($src . '/' . $file,$dst . '/' . $file); 
-            } 
-        } 
-    } 
-    closedir($dir); 
-}
+    public $worldsopen = array();
 
 public function StartGameTimer() {
     $task = new StartGameTimer ($this);
@@ -150,27 +133,7 @@ public function StartGameTimer() {
     $this->getServer()->getScheduler()->scheduleDelayedRepeatingTask($task, $time, $time);
 }
 
-function delete_directory($dirname) {
-         if (is_dir($dirname))
-           $dir_handle = opendir($dirname);
-	 if (!$dir_handle)
-	      return false;
-	 while($file = readdir($dir_handle)) {
-	       if ($file != "." && $file != "..") {
-	            if (!is_dir($dirname."/".$file))
-	                 unlink($dirname."/".$file);
-	            else
-	                 $this->delete_directory($dirname.'/'.$file);
-	       }
-	 }
-	 closedir($dir_handle);
-	 rmdir($dirname);
-	 return true;
-}
-    
-
-
-    public function chkConfig() {
+public function chkConfig() {
         $hgworld = $this->getConfig()->get("HG-WORLDS");
         $lobby = $this->getConfig()->get("LOBBY-WORLD");
         $spawn = $this->getConfig()->get("SPAWN-WORLD");
@@ -284,7 +247,7 @@ function delete_directory($dirname) {
             return false;
     	}
     }
-        private $HGS;
-        private $HGW;
-        private $HGID;
+        public $HGS;
+        public $HGW;
+        public $HGID;
 }
