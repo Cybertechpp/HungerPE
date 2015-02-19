@@ -15,9 +15,7 @@ class StartArena extends PluginTask {
 	}
 	
 	public function onRun($ticks) {
-            foreach ($this->plugin->gamestats as $g){
-            $this->plugin->CheckHGStart($arena, $timer);
-            }
+            return true;
         }
         
         public function ThaPrepareArenaForStart(Main $other, $arena) {
@@ -26,9 +24,26 @@ class StartArena extends PluginTask {
                 $player = $other->getServer()->getPlayerExact($a);
                 $playern = $player->getName();
                 echo $playern;
-            }
+                foreach ($other->queing[$arena] as $p){
+                    $player = $other->getServer()->getPlayerExact($p);
+                    if ($player instanceof Player){
+                        $playern = $player->getName();
+                        
+                        
+                    }
+                }
+                //TP Player
+                //Clear Inv
+                //Load World
                 
-            //
+            }
+        }
+        
+        public function TPToArena(Player $player, $arena, Main $other) {
+            $other->
+        }
+        
+        public function ClearInv(Player $player){
             
         }
 }

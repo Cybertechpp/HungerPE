@@ -255,6 +255,26 @@ public function StartGameTimer() {
             return false;
     	}
     }
+    
+    public function SetHGSpawn(Player $player,$num, $arena) {
+        $mmm = (new Config($this->getServer()->getDataPath() . "/plugins/Skills/" . "Skill-Settings.yml", Config::YAML ,array()));
+        $conf = $mmm->getAll();
+        $loc['x'] = $player->getPosition()->x;
+        $loc['y'] = $player->getPosition()->y;
+        $loc['z'] = $player->getPosition()->z;
+        $conf[$arena][$num]['x'] = $loc['x'];
+        $conf[$arena][$num]['y'] = $loc['y'];
+        $conf[$arena][$num]['z'] = $loc['z'];
+        $player->sendMessage("Spawn Set!");
+        $mmm->setAll($conf);
+        $mmm->save();
+        return true;
+    }
+
+
+    public function LoadYML() {
+    new Config (new Config($this->getServer()->getDataPath() . "/plugins/Skills/" . "Skill-Settings.yml", Config::YAML ,array()));
+    }
         public $HGS;
         public $HGW;
         public $HGID;
