@@ -8,7 +8,7 @@ use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
 use pocketmine\plugin\Plugin;
 
-class StartGameTimer extends Plugin {
+class StartGameTimer extends Main {
 	private $plugin;
 	
 	public function __construct(Main $plugin) {
