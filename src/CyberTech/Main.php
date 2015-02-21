@@ -39,13 +39,15 @@ use CyberTech\StartQueingTimer;
 use CyberTech\StartArena;
 
 
-//TEST
+
 class Main extends PluginBase implements Listener{
     
     
     public $gameState = 0;
- 
+    public $config;
     public function onEnable() {
+        $temp = new Config('Config.yml'. Config::YAML);
+        $this->config = $temp->getAll();
         $this->chkConfig();
         @mkdir($this->getDataFolder());
         $this->saveDefaultConfig();
@@ -81,9 +83,12 @@ class Main extends PluginBase implements Listener{
                 if ($args[0] == "list"){
                     //List HG
                 }
-                return true;
-                default:
-                    return false;
+                
+                if ($args[0] == "open"){
+                    return true;
+                }
+            default:
+                return false;
         }
     }
     
@@ -255,6 +260,29 @@ public function StartGameTimer() {
             return false;
     	}
     }
+    
+    public function SetHGSpawn(Player $player,$num, $arena) {
+        $mmm = (new Config("Config.yml", Config::YAML ,array()));
+        $conf = $mmm->getAll();
+        $loc['x'] = $player->getPosition()->x;
+        $loc['y'] = $player->getPosition()->y;
+        $loc['z'] = $player->getPosition()->z;
+        $conf[$arena][$num]['x'] = $loc['x'];
+        $conf[$arena][$num]['y'] = $loc['y'];
+        $conf[$arena][$num]['z'] = $loc['z'];
+        $player->sendMessage("Spawn Set!");
+        $mmm->setAll($conf);
+        $mmm->save();
+        return true;
+    }
+
+
+    public function LoadYML() {
+   /* new Config (new Config($this->getServer()->getDataPath() . "/plugins/Skills/" . "Skill-Settings.yml", Config::YAML ,array()));
+    new Config (new Config($this->getServer()->getDataPath() . "/plugins/Skills/" . "World-Settings.yml", Config::YAML ,array()));
+    */
+    }
+    
         public $HGS;
         public $HGW;
         public $HGID;
