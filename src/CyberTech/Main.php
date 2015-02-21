@@ -69,9 +69,9 @@ class Main extends PluginBase implements Listener{
         foreach ($this->worldsopen as $w){
             $path = $this->getServer()->getDataPath();
             $topath = $path."worlds/".$w."/";
-            echo $topath;
+            //echo $topath;
             $a = new StartWorld($this);
-            $a->delete_directory($dirname);
+            $a->delete_directory($topath);
         }
     }
     
