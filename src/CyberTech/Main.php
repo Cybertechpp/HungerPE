@@ -39,7 +39,7 @@ use CyberTech\StartQueingTimer;
 use CyberTech\StartArena;
 
 
-//TEST
+
 class Main extends PluginBase implements Listener{
     
     
