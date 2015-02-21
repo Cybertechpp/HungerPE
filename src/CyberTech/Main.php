@@ -44,8 +44,10 @@ class Main extends PluginBase implements Listener{
     
     
     public $gameState = 0;
- 
+    public $config;
     public function onEnable() {
+        $temp = new Config('Config.yml'. Config::YAML);
+        $this->config = $temp->getAll();
         $this->chkConfig();
         @mkdir($this->getDataFolder());
         $this->saveDefaultConfig();
@@ -81,9 +83,12 @@ class Main extends PluginBase implements Listener{
                 if ($args[0] == "list"){
                     //List HG
                 }
-                return true;
-                default:
-                    return false;
+                
+                if ($args[0] == "open"){
+                    return true;
+                }
+            default:
+                return false;
         }
     }
     
@@ -257,7 +262,7 @@ public function StartGameTimer() {
     }
     
     public function SetHGSpawn(Player $player,$num, $arena) {
-        $mmm = (new Config($this->getServer()->getDataPath() . "/plugins/Skills/" . "Skill-Settings.yml", Config::YAML ,array()));
+        $mmm = (new Config("Config.yml", Config::YAML ,array()));
         $conf = $mmm->getAll();
         $loc['x'] = $player->getPosition()->x;
         $loc['y'] = $player->getPosition()->y;
@@ -273,8 +278,11 @@ public function StartGameTimer() {
 
 
     public function LoadYML() {
-    new Config (new Config($this->getServer()->getDataPath() . "/plugins/Skills/" . "Skill-Settings.yml", Config::YAML ,array()));
+   /* new Config (new Config($this->getServer()->getDataPath() . "/plugins/Skills/" . "Skill-Settings.yml", Config::YAML ,array()));
+    new Config (new Config($this->getServer()->getDataPath() . "/plugins/Skills/" . "World-Settings.yml", Config::YAML ,array()));
+    */
     }
+    
         public $HGS;
         public $HGW;
         public $HGID;
