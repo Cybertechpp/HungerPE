@@ -21,6 +21,7 @@ use pocketmine\event\player\PlayerDeathEvent;
 use pocketmine\event\entity\EntityDeathEvent;
 use pocketmine\event\entity\EntityLevelChangeEvent;
 use pocketmine\level\Position;
+use pocketmine\level\Explosion;
 use pocketmine\math\Vector3;
 use pocketmine\permission\Permission;
 use pocketmine\permission\PermissionAttachment;
@@ -147,10 +148,10 @@ public function StartGameTimer() {
 
 
     public function chkConfig() {
-        $hgworld = $this->getConfig()->get("HG-WORLDS");
-        $lobby = $this->getConfig()->get("LOBBY-WORLD");
-        $spawn = $this->getConfig()->get("SPAWN-WORLD");
-        $msg = $this->getConfig()->get("JOIN-MESSAGE");
+        $hgworld = $this->getConfig()->get("HG-Worlds");
+        $lobby = $this->getConfig()->get("Lobby-World");
+        $spawn = $this->getConfig()->get("Spawn-World");
+        $msg = $this->getConfig()->get("Join-Message");
         if($hgworld == null) {
             $this->getLogger()->info( TextFormat::GREEN . "ERROR - Configuration Error!" );
             $this->getPluginLoader()->disablePlugin($this);
@@ -178,10 +179,10 @@ public function StartGameTimer() {
         $name = $player->getName();
         $alert = $event->getJoinMessage();
         $currworld = $player->getLevel();
-        $hgworld = $this->getConfig()->get("HG-WORLDS");
-        $lobby = $this->getConfig()->get("LOBBY-WORLD");
-        $spawn = $this->getConfig()->get("SPAWN-WORLD");
-        $msg = $this->getConfig()->get("JOIN-MESSAGE");
+        $hgworld = $this->getConfig()->get("HG-Worlds");
+        $lobby = $this->getConfig()->get("Lobby-World");
+        $spawn = $this->getConfig()->get("Spawn-World");
+        $msg = $this->getConfig()->get("Join-Message");
         $event->setJoinMessage("");
         if($this->gameState == 0) {
             if($currworld == $hgworld) {
@@ -249,6 +250,72 @@ public function StartGameTimer() {
         }
         
     }
+    
+    /* On Player Join */
+    public function onQuit(PlayerQuitEvent $event) {
+        $player = $event->getPlayer();
+        $name = $player->getName();
+        $alert = $event->getQuitMessage();
+        $currworld = $player->getLevel();
+        $hgworld = $this->getConfig()->get("HG-Worlds");
+        $lobby = $this->getConfig()->get("Lobby-World");
+        $spawn = $this->getConfig()->get("Spawn-World");
+        $msg = $this->getConfig()->get("Join-Message");
+        $event->setJoinMessage("");
+        if($this->gameState == 1) {
+             //Remove any array/sessions here
+            return true;
+        }
+    }
+    
+    /* On Player Death */
+    public function onDeath(PlayerDeathEvent $event) {
+        $player = $event->getPlayer()->getLocation();
+        $loc = $player->getPosition();
+        $name = $player->getName();
+        $currworld = $player->getLevel();
+        $spawn = $this->getConfig()->get("Spawn-World");
+        $hgworld = $this->getConfig()->get("HG-Worlds");
+        if($currworld == $hgworld && $this->gameState == 1) {
+            $player->teleport($this->getServer()->getLevelByName($spawn)->getSpawnLocation(), 0, 0);
+            $explosion = new Explosion ( new Position ( $arenaPos->x, $arenaPos->y + 8, $arenaPos->z, $level ), 1 );
+            $explosion->explode ();
+            $event->setCancelled(true);
+            return true;
+        }else{
+            return true;
+        }
+    }
+    
+    /* On Player Break */
+    public function onBreak(BlockBreakEvent $event) {
+        $player = $event->getPlayer();
+        $name = $player->getName();
+        $currworld = $player->getLevel();
+        $hgworld = $this->getConfig()->get("HG-Worlds");
+        if(!$currworld == $hgworld && !$event->getBlock()->getName() == "Oak Leaves" && !$this->gameState == 1) {
+            $event->setCancelled(true);
+            return true;
+        }else{
+            return true;
+        }
+    }
+    
+    /* On Player Place */
+    public function onPlace(BlockPlaceEvent $event) {
+        $player = $event->getPlayer();
+        $name = $player->getName();
+        $currworld = $player->getLevel();
+        $hgworld = $this->getConfig()->get("HG-Worlds");
+        if($currworld == $hgworld) {
+            $event->setCancelled(true);
+            return true;
+        }else{
+            return true;
+        }
+    }
+    
+    
     /* Alert Seperator */
     public function initAlert($world, $message){
     	if($this->getServer()->getLevelByName($world)){
@@ -273,7 +340,7 @@ public function StartGameTimer() {
         $player->sendMessage("Spawn Set!");
         $mmm->setAll($conf);
         $mmm->save();
-        return true;
+        return true;//hey
     }
 
 
