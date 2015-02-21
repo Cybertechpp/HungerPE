@@ -37,6 +37,7 @@ use pocketmine\plugin\PluginPharLoader;
 use pocketmine\plugin\PluginLoader;
 use CyberTech\StartQueingTimer;
 use CyberTech\StartArena;
+use CyberTech\StartWorld;
 
 
 
@@ -69,7 +70,8 @@ class Main extends PluginBase implements Listener{
             $path = $this->getServer()->getDataPath();
             $topath = $path."worlds/".$w."/";
             echo $topath;
-            $this->delete_directory($topath);
+            $a = new StartWorld($this);
+            $a->delete_directory($dirname);
         }
     }
     

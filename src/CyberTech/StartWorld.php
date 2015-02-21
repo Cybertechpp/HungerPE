@@ -6,7 +6,7 @@ use pocketmine\scheduler\PluginTask;
 use pocketmine\Server;
 use pocketmine\Player;
 
-class StartArena extends PluginTask {
+class StartWorld extends PluginTask {
 	private $plugin;
 	
 	public function __construct(Main $plugin) {
